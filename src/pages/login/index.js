@@ -1,94 +1,76 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import React, { useState } from 'react';
+import { FormGroup, Label, Input } from 'reactstrap';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+
+import * as loginActions from '../../store/login/actions';
 import api from '../../api';
+import img from '../image/login.jpg';
+import { Div, Article, Section, Img, Button } from './styles';
 
 export default () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [user, setUser] = useState({});
-    const [token, setToken] = useState('');
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [date, setDate] = useState('');
-    const [hour, setHour] = useState('');
-    const AuthStr = 'Bearer'.concat(token);
 
-    async function handleStoreAuth () {
-        const auth = await api.post('/login', {email,password});
+    const dispatch = useDispatch();
 
-        if (auth.response.data.token) {
-            setToken(auth.data.token);
-            setUser(auth.data.user);
-            console.log(user);
-            console.log(token);
+    async function handleLogin(){
+        try {
+            const response = await api.post('/login',{
+                email,
+                password,
+            })
+            if (response.data.token) {
+                dispatch(loginActions.login(response.data.token));
+              }
+        } catch (error) {
+            alert('erro ao tentar logar');
         }
     }
-
-    async function handleStoreNotepad(){
-        api.get(api,{headers:{ Authorization: AuthStr }})
-        .then((response) => console.log(response.data))
-        .catch((error) => console.log(error))
-
-        api.post('/cards', {title, content, date, hour})
-        .then((response) => console.log(response.data))
-        .catch((error) => console.log(error));
-    }
-
-    return(
-        <>
-        <div style={{ padding:'50px'}}>
-            <Form style={{ width: '450px', padding:'30px', margin: 'auto', textAlign:'center',
-            border:'1px solid black', borderRadius:'20px' }}>
-            <FormGroup>
-                <Label for="exampleEmail">Email</Label>
-                <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)} />
-            </FormGroup>
-            <FormGroup>
-                <Label for="examplePassword">Password</Label>
-                <Input
-                type="text"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)} />
-            </FormGroup>
-            <Button onClick={handleStoreAuth}>Cadastrar</Button>
-            </Form>
-
-            <Form style={{ width: '450px', padding:'30px', margin: 'auto', textAlign:'center',
-            border:'1px solid black', borderRadius:'20px', marginTop:'2em' }}>
-            <FormGroup>
-                <Label for="exampleTitle">Titulo</Label>
-                <Input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)} />
-            </FormGroup>
-            <FormGroup>
-                <Label for="exampleContente">Conteúdo</Label>
-                <Input
-                type="text"
-                value={content}
-                onChange={(e) => setContent(e.target.value)} />
-            </FormGroup>
-            <FormGroup>
-                <Label for="exampleDate">Data</Label>
-                <Input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)} />
-            </FormGroup>
-            <FormGroup>
-                <Label for="exampleHour">Hora</Label>
-                <Input
-                type="time"
-                value={hour}
-                onChange={(e) => setHour(e.target.value)} />
-            </FormGroup>
-            <Button onClick={handleStoreNotepad}>Cadastrar</Button>
-            </Form>
+    return (
+        <div
+          style={{
+            backgroundImage: `url(${img})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            height: '100vh',
+          }}
+        >
+          <br />
+          <div className="container" style={{marginTop:"10em"}}>
+            <div className="row">
+              <section className="col-12">
+                <Article style={{ width: '450px', margin: 'auto' }}>
+                  <FormGroup>
+                    <Label for="examplePassword">Email</Label>
+                    <Input
+                      type="text"
+                      value={email}
+                      placeholder="email"
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <Label for="exampleEmail">Password</Label>
+                    <Input
+                      type="text"
+                      value={password}
+                      placeholder="password"
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </FormGroup>
+                  <Button onClick={handleLogin}>Login</Button>
+                  {/* <Link
+                    to="/cadastro"
+                    onClick={handleLogin}
+                    style={{ paddingLeft: '10px' }}
+                  >
+                    <Button>Cadastrar usuário</Button>
+                  </Link> */}
+                </Article>
+              </section>
+            </div>
+          </div>
         </div>
-        </>
-    )
+      );
 }

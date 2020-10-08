@@ -3,16 +3,16 @@ import { BrowserRouter, Switch } from 'react-router-dom';
 
 import Route from './routeWrapper';
 
-import Login from '../pages/login';
-import HomeCard from '../pages/homeCards';
+import Login from '../pages/login/index';
+import HomeCard from '../pages/homeCards/index';
 
-export default function Routes(){
+export default() => {
     return(
         <BrowserRouter>
             <Switch>
+                <Route path="/" exact isPrivate component={HomeCard} />
                 <Route path="/login" exact component={Login} />
-                <Route path="/" exact component={HomeCard} />
             </Switch>
         </BrowserRouter>
-    )
-}
+    );
+};
